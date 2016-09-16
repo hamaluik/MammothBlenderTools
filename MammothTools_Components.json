@@ -1,0 +1,10 @@
+{
+    "Health": [
+        { "name": "max", "type": "float" },
+        { "name": "current", "type": "float" }
+    ],
+    "Character": [
+        { "name": "first_name", "type": "string" },
+        { "name": "last_name", "type": "string" }
+    ]
+}
