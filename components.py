@@ -16,11 +16,35 @@ def load():
 		# _actually_ has the component or not
 		attribute_dict = {"internal___active": BoolProperty(default=False)}
 		for attribute in attributes:
+			# specialize the inputs
+			subtype = 'NONE'
+			if 'subtype' in attribute:
+				subtype = attribute['subtype']
+			unit = 'NONE'
+			if 'units' in attribute:
+				unit = attribute['units']
+
 			# TODO: more attribute types
-			if attribute['type'] == 'float':
-				attribute_dict[attribute['name']] = FloatProperty(name=attribute['name'])
+			if attribute['type'] == 'int':
+				attribute_dict[attribute['name']] = IntProperty(name=attribute['name'], subtype=subtype)
+			elif attribute['type'] == 'float':
+				attribute_dict[attribute['name']] = FloatProperty(name=attribute['name'], subtype=subtype, unit=unit)
+			elif attribute['type'] == 'bool':
+				attribute_dict[attribute['name']] = BoolProperty(name=attribute['name'], subtype=subtype)
 			elif attribute['type'] == 'string':
-				attribute_dict[attribute['name']] = StringProperty(name=attribute['name'])
+				attribute_dict[attribute['name']] = StringProperty(name=attribute['name'], subtype=subtype)
+			elif attribute['type'] == 'ivec2':
+				attribute_dict[attribute['name']] = IntVectorProperty(name=attribute['name'], size=2, subtype=subtype)
+			elif attribute['type'] == 'ivec3':
+				attribute_dict[attribute['name']] = IntVectorProperty(name=attribute['name'], size=3, subtype=subtype)
+			elif attribute['type'] == 'ivec4':
+				attribute_dict[attribute['name']] = IntVectorProperty(name=attribute['name'], size=4, subtype=subtype)
+			elif attribute['type'] == 'vec2':
+				attribute_dict[attribute['name']] = FloatVectorProperty(name=attribute['name'], size=2, subtype=subtype, unit=unit)
+			elif attribute['type'] == 'vec3':
+				attribute_dict[attribute['name']] = FloatVectorProperty(name=attribute['name'], size=3, subtype=subtype, unit=unit)
+			elif attribute['type'] == 'vec4':
+				attribute_dict[attribute['name']] = FloatVectorProperty(name=attribute['name'], size=4, subtype=subtype, unit=unit)
 			elif attribute['type'] == 'colour':
 				attribute_dict[attribute['name']] = FloatVectorProperty(name=attribute['name'], subtype='COLOR', default=(1.0, 1.0, 1.0, 1.0), size=4, min=0, max=1)
 			else:

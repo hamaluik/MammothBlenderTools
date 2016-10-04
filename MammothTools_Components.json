@@ -10,5 +10,8 @@
     "Team": [
         { "name": "name", "type": "string" },
         { "name": "colour", "type": "colour" }
+    ],
+    "GravityField": [
+        { "name": "strength", "type": "vec3", "units": "ACCELERATION" }
     ]
 }
