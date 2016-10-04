@@ -11,4 +11,6 @@ class MammothComponents(bpy.types.Panel):
 		obj = context.object
 		
 		row = layout.row()
-		row.label('tits')
+		row.label('blah')
+
+		layout.prop(context.scene.mammoth_components_settings, "definitions_path", text="Definitions File")
