@@ -47,3 +47,13 @@ def unload():
 		pass
 	bpy.mammothComponentsLayout = {}
 	bpy.mammothRegisteredComponents = {}
+
+def loadLayout(path):
+		import os
+		if os.path.splitext(path)[1] == '.json':
+			with open(bpy.path.abspath(path)) as definition_file:
+				import json
+				bpy.mammothComponentsLayout = json.load(definition_file)
+		else:
+			print('Definitions must be .json files!')
+		print(bpy.mammothComponentsLayout)

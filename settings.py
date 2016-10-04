@@ -7,14 +7,7 @@ from . import components
 class MammothComponents(PropertyGroup):
 	def definitions_path_updated(self, context):
 		components.unload()
-		import os
-		if os.path.splitext(self.definitions_path)[1] == '.json':
-			with open(bpy.path.abspath(self.definitions_path)) as definition_file:
-				import json
-				bpy.mammothComponentsLayout = json.load(definition_file)
-		else:
-			print('Definitions must be .json files!')
-		print(bpy.mammothComponentsLayout)
+		components.loadLayout(self.definitions_path)
 		components.load()
 		
 	definitions_path = StringProperty(

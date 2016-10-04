@@ -37,6 +37,7 @@ def register():
 	bpy.types.Scene.mammoth_components_settings = PointerProperty(type=settings.MammothComponents)
 	bpy.utils.register_class(operators.AddMammothComponent)
 	bpy.utils.register_class(operators.DeleteMammothComponent)
+	bpy.utils.register_class(operators.ReloadMammothComponents)
 	bpy.utils.register_class(menus.AddMammothComponent)
 	components.load()
 
@@ -46,6 +47,7 @@ def unregister():
 	del bpy.types.Scene.mammoth_components_settings
 	bpy.utils.unregister_class(operators.AddMammothComponent)
 	bpy.utils.unregister_class(operators.DeleteMammothComponent)
+	bpy.utils.unregister_class(operators.ReloadMammothComponents)
 	bpy.utils.unregister_class(menus.AddMammothComponent)
 	components.unload()
 
