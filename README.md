@@ -1,2 +1,3 @@
-# mammoth_blender_tools
-A plugin for Blender for preparing scene data for mammoth
+# MammothBlenderTools
+
+Various tools for adding components to objects and exporting the result as GLTF
