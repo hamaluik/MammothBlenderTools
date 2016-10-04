@@ -17,11 +17,13 @@ if "bpy" in locals():
 	imp.reload(panels)
 	imp.reload(components)
 	imp.reload(settings)
+	imp.reload(operators)
 	print("Reloaded mammoth tools")
 else:
 	from . import panels
 	from . import components
 	from . import settings
+	from . import operators
 	print("Imported mammoth tools")
 
 import bpy
@@ -29,14 +31,18 @@ from bpy.props import *
 
 def register():
 	bpy.utils.register_class(panels.MammothComponents)
-	bpy.utils.register_class(settings.MammothComponentsSettings)
-	bpy.types.Scene.mammoth_components_settings = PointerProperty(type=settings.MammothComponentsSettings)
+	bpy.utils.register_class(settings.MammothComponents)
+	bpy.types.Scene.mammoth_components_settings = PointerProperty(type=settings.MammothComponents)
+	bpy.utils.register_class(operators.AddMammothComponent)
+	bpy.utils.register_class(operators.DeleteMammothComponent)
 	components.load()
 
 def unregister():
 	bpy.utils.unregister_class(panels.MammothComponents)
-	bpy.utils.unregister_class(settings.MammothComponentsSettings)
+	bpy.utils.unregister_class(settings.MammothComponents)
 	del bpy.types.Scene.mammoth_components_settings
+	bpy.utils.unregister_class(operators.AddMammothComponent)
+	bpy.utils.unregister_class(operators.DeleteMammothComponent)
 	components.unload()
 
 if __name__ == '__main__':

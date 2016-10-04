@@ -4,7 +4,7 @@ from bpy.types import PropertyGroup
 
 from . import components
 
-class MammothComponentsSettings(PropertyGroup):
+class MammothComponents(PropertyGroup):
 	def definitions_path_updated(self, context):
 		components.unload()
 		import os
