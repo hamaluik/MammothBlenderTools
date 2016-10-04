@@ -21,6 +21,8 @@ def load():
 				attribute_dict[attribute['name']] = FloatProperty(name=attribute['name'])
 			elif attribute['type'] == 'string':
 				attribute_dict[attribute['name']] = StringProperty(name=attribute['name'])
+			elif attribute['type'] == 'colour':
+				attribute_dict[attribute['name']] = FloatVectorProperty(name=attribute['name'], subtype='COLOR', default=(1.0, 1.0, 1.0, 1.0), size=4, min=0, max=1)
 			else:
 				raise TypeError('Unsupported Mammoth attribute type \'%s\' for %s on %s' % (attribute['type'], attribute['name'], key))
 		
