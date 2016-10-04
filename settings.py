@@ -13,7 +13,7 @@ class MammothComponents(PropertyGroup):
 	definitions_path = StringProperty(
 		name="definitions_path",
 		description="Path to the component descriptions file",
-		default="*.json",
+		default="*.json,*.toml",
 		options={'HIDDEN'},
 		maxlen=1024,
 		subtype='FILE_PATH',
