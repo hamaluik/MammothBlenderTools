@@ -2,8 +2,8 @@ bl_info = {
 	'name': 'Mammoth Tools',
 	'description': 'Various tools for adding components to objects and exporting the result as GLTF',
 	'author': 'Kenton Hamaluik',
-	'version': (0, 0, 1),
-	'blender': (2, 75, 0),
+	'version': (0, 0, 2),
+	'blender': (2, 78, 0),
 	'location': 'Properties > Object',
 	'warning': 'Still very much under development!',
 	'wiki_url': 'https://github.com/BlazingMammothGames/mammoth_blender_tools',
@@ -19,6 +19,7 @@ if "bpy" in locals():
 	imp.reload(settings)
 	imp.reload(operators)
 	imp.reload(menus)
+	imp.reload(exporter)
 	print("Reloaded mammoth tools")
 else:
 	from . import panels
@@ -26,10 +27,15 @@ else:
 	from . import settings
 	from . import operators
 	from . import menus
+	from . import exporter
 	print("Imported mammoth tools")
 
 import bpy
 from bpy.props import *
+
+def menu_func_export(self, context):
+	print("Registering / de-registering menu item")
+	operator = self.layout.operator(exporter.MammothExporter.bl_idname, text="Mammoth GLTF (.gltf)")
 
 def register():
 	bpy.utils.register_class(panels.MammothComponents)
@@ -40,6 +46,8 @@ def register():
 	bpy.utils.register_class(operators.ReloadMammothComponents)
 	bpy.utils.register_class(menus.AddMammothComponent)
 	components.load()
+	bpy.utils.register_class(exporter.MammothExporter)
+	bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 def unregister():
 	bpy.utils.unregister_class(panels.MammothComponents)
@@ -50,6 +58,8 @@ def unregister():
 	bpy.utils.unregister_class(operators.ReloadMammothComponents)
 	bpy.utils.unregister_class(menus.AddMammothComponent)
 	components.unload()
+	bpy.utils.unregister_class(exporter.MammothExporter)
+	bpy.types.INFO_MT_file_export.remove(menu_func_export)
 
 if __name__ == '__main__':
 	register()
