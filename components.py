@@ -80,10 +80,6 @@ def loadLayout(path):
 			with open(bpy.path.abspath(path)) as definition_file:
 				import json
 				bpy.mammothComponentsLayout = json.load(definition_file)
-		elif os.path.splitext(path)[1] == '.toml':
-			with open(bpy.path.abspath(path)) as definition_file:
-				import toml
-				bpy.mammothComponentsLayout = toml.loads(definition_file.read())
 		else:
 			print('Definitions must be .json files!')
 		print(bpy.mammothComponentsLayout)
