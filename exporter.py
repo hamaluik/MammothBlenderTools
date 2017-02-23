@@ -91,19 +91,29 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 				return [q[1], q[2], q[3], q[0]]
 
 			# now build the dictionary
-			ob = {
+			node = {
 				'children': {child.name: export_object(child) for child in obj.children},
 				'translation': [i for i in obj.location],
 				'rotation': sort_quat(obj.rotation_quaternion),
 				'scale': [i for i in obj.scale],
 				'components': components
 			}
+
+			if obj.type == 'MESH':
+				node['mesh'] = obj.data.name
+			elif obj.type == 'EMPTY':
+				pass
+			elif obj.type == 'CAMERA':
+				node['camera'] = obj.data.name
+			elif obj.type == 'LAMP':
+				node['light'] = obj.data.name
+			else:
+				raise TypeError('Unsupported object type \'%s\' (%s)' % (obj.type, obj.name))
 			
-			return ob
+			return node
 
 		# export each _root_ object (only objects without parents)
-		object_array = {obj.name: export_object(obj) for obj in objects if obj.parent is None}
-		return object_array
+		return {obj.name: export_object(obj) for obj in objects if obj.parent is None}
 
 	def export_meshes(self, scene):
 		# TODO
@@ -114,8 +124,27 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return []
 
 	def export_cameras(self, scene):
-		# TODO
-		return []
+		cameras = list(scene.get('cameras', []))
+
+		def export_camera(camera):
+			cam = {
+				'near': camera.clip_start,
+				'far':  camera.clip_end
+			}
+
+			if camera.type == 'ORTHO':
+				cam['type'] = 'orthographic'
+				cam['ortho_size'] = camera.ortho_scale
+			elif camera.type == 'PERSP':
+				cam['type'] = 'perspective'
+				cam['fov'] = camera.angle_y
+				cam['aspect'] = camera.angle_x / camera.angle_y
+			else:
+				raise TypeError('Unsupported camera type \'%s\' (%s)' % (camera.type, camera.name))
+
+			return cam
+
+		return {cam.name: export_camera(cam) for cam in cameras}
 
 	def export_materials(self, scene):
 		# TODO

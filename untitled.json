@@ -1,5 +1,13 @@
 {
-    "cameras": [],
+    "cameras": {
+        "Persp Camera": {
+            "aspect": 1.703595982340029,
+            "far": 100.0,
+            "fov": 0.5033799409866333,
+            "near": 0.10000000149011612,
+            "type": "perspective"
+        }
+    },
     "lights": [],
     "materials": [],
     "meshes": [],
@@ -9,11 +17,54 @@
         "version": "0.0.0"
     },
     "objects": {
+        "Camera": {
+            "camera": "Persp Camera",
+            "children": {},
+            "components": {},
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                10.375484466552734,
+                -12.080355644226074,
+                5.915089130401611
+            ]
+        },
+        "Camera.001": {
+            "camera": "Persp Camera",
+            "children": {},
+            "components": {},
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                12.365965843200684,
+                3.9121971130371094,
+                4.509764194488525
+            ]
+        },
         "Cube": {
             "children": {
                 "Ball": {
                     "children": {},
                     "components": {},
+                    "mesh": "Spheroid",
                     "rotation": [
                         0.0,
                         0.0,
@@ -28,12 +79,13 @@
                     "translation": [
                         -4.839776515960693,
                         -3.039827346801758,
-                        -0.9815456867218018
+                        0.11498427391052246
                     ]
                 },
                 "Ball.001": {
                     "children": {},
                     "components": {},
+                    "mesh": "Spheroid",
                     "rotation": [
                         0.0,
                         0.0,
@@ -48,11 +100,33 @@
                     "translation": [
                         1.8041924238204956,
                         3.5515809059143066,
-                        -0.7204378843307495
+                        0.011320233345031738
                     ]
                 }
             },
             "components": {},
+            "mesh": "Cube",
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                1.9167356491088867
+            ]
+        },
+        "Ground": {
+            "children": {},
+            "components": {},
+            "mesh": "Plane",
             "rotation": [
                 0.0,
                 0.0,
@@ -68,6 +142,27 @@
                 0.0,
                 0.0,
                 0.0
+            ]
+        },
+        "Sun": {
+            "children": {},
+            "components": {},
+            "light": "Sun",
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                3.827408790588379
             ]
         }
     }
