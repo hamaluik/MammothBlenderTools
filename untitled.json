@@ -1,0 +1,74 @@
+{
+    "cameras": [],
+    "lights": [],
+    "materials": [],
+    "meshes": [],
+    "meta": {
+        "blender": "2.78 (sub 0)",
+        "file": "untitled_blend",
+        "version": "0.0.0"
+    },
+    "objects": {
+        "Cube": {
+            "children": {
+                "Ball": {
+                    "children": {},
+                    "components": {},
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "translation": [
+                        -4.839776515960693,
+                        -3.039827346801758,
+                        -0.9815456867218018
+                    ]
+                },
+                "Ball.001": {
+                    "children": {},
+                    "components": {},
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "translation": [
+                        1.8041924238204956,
+                        3.5515809059143066,
+                        -0.7204378843307495
+                    ]
+                }
+            },
+            "components": {},
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    }
+}

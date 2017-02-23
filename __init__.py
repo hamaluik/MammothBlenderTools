@@ -1,6 +1,6 @@
 bl_info = {
 	'name': 'Mammoth Tools',
-	'description': 'Various tools for adding components to objects and exporting the result as GLTF',
+	'description': 'Various tools for adding components to objects and exporting the result as Mammoth JSON',
 	'author': 'Kenton Hamaluik',
 	'version': (0, 0, 2),
 	'blender': (2, 78, 0),
@@ -35,7 +35,7 @@ from bpy.props import *
 
 def menu_func_export(self, context):
 	print("Registering / de-registering menu item")
-	operator = self.layout.operator(exporter.MammothExporter.bl_idname, text="Mammoth GLTF (.gltf)")
+	operator = self.layout.operator(exporter.MammothExporter.bl_idname, text="Mammoth JSON (.json)")
 
 def register():
 	bpy.utils.register_class(panels.MammothComponents)
