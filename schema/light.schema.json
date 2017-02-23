@@ -1,0 +1,12 @@
+{
+    "id": "light.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "Light data",
+    "properties": {
+        "type": {"enum": ["directional", "point"]},
+        "colour": {"$ref": "#/colour.json"},
+        "distance": {"type": "number"}
+    },
+    "required": ["type", "colour"]
+}

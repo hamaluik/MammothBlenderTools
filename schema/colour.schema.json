@@ -1,0 +1,11 @@
+{
+    "id": "colour.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "The RGB components of the colour",
+    "properties": {
+        "r": {"type": "number", "minimum": 0, "maximum": 1},
+        "g": {"type": "number", "minimum": 0, "maximum": 1},
+        "b": {"type": "number", "minimum": 0, "maximum": 1}
+    }
+}

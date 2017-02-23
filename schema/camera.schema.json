@@ -1,0 +1,15 @@
+{
+    "id": "camera.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "description": "Camera data",
+    "properties": {
+        "type": {"enum": ["orthographic", "perspective"]},
+        "near": {"type": "number"},
+        "far": {"type": "number"},
+        "aspect": {"type": "number"},
+        "fov": {"type": "number"},
+        "ortho_size" : {"type": "number"}
+    },
+    "required": ["type", "near", "far"]
+}
