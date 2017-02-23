@@ -45,11 +45,15 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return {'FINISHED'}
 	
 	def process(self, scene):
+		import sys
+		mod_version = sys.modules['mammoth_blender_tools'].bl_info.get('version')
+		mod_version_string = '.'.join(str(v) for v in mod_version)
+
 		data = {
 			'meta': {
 				'file': bpy.path.clean_name(bpy.path.basename(bpy.data.filepath)),
 				'blender': bpy.app.version_string,
-				'version': '0.0.0',
+				'exporter_version': mod_version_string,
 			},
 			'objects': self.export_objects(scene),
 			'meshes': self.export_meshes(scene),
