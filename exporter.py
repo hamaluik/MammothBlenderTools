@@ -120,8 +120,24 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return []
 
 	def export_lights(self, scene):
-		# TODO
-		return []
+		lights = list(scene.get('lamps'))
+
+		def export_light(light):
+			lit = {
+				'colour': (light.color * light.energy)[:]
+			}
+
+			if light.type == 'SUN':
+				lit['type'] = 'directional'
+			elif light.type == 'POINT':
+				lit['type'] = 'point'
+				lit['distance'] = light.distance
+			else:
+				raise TypeError('Unsupported light type \'%s\' (%s)' % (light.type, light.name))
+
+			return lit
+
+		return {light.name: export_light(light) for light in lights}
 
 	def export_cameras(self, scene):
 		cameras = list(scene.get('cameras', []))

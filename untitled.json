@@ -8,7 +8,25 @@
             "type": "perspective"
         }
     },
-    "lights": [],
+    "lights": {
+        "Point": {
+            "colour": [
+                0.5,
+                0.3978985548019409,
+                0.24230358004570007
+            ],
+            "distance": 25.0,
+            "type": "point"
+        },
+        "Sun": {
+            "colour": [
+                0.7373461723327637,
+                0.7453781366348267,
+                1.0
+            ],
+            "type": "directional"
+        }
+    },
     "materials": [],
     "meshes": [],
     "meta": {
@@ -142,6 +160,27 @@
                 0.0,
                 0.0,
                 0.0
+            ]
+        },
+        "Point": {
+            "children": {},
+            "components": {},
+            "light": "Point",
+            "rotation": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "translation": [
+                0.0,
+                0.0,
+                0.3589416742324829
             ]
         },
         "Sun": {
