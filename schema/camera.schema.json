@@ -4,6 +4,7 @@
     "type": "object",
     "description": "Camera data",
     "properties": {
+        "name": {"type": "string"},
         "type": {"enum": ["orthographic", "perspective"]},
         "near": {"type": "number"},
         "far": {"type": "number"},
@@ -11,5 +12,5 @@
         "fov": {"type": "number"},
         "ortho_size" : {"type": "number"}
     },
-    "required": ["type", "near", "far"]
+    "required": ["name", "type", "near", "far"]
 }

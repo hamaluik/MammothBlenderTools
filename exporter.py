@@ -96,12 +96,17 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			# now build the dictionary
 			node = {
-				'children': {child.name: export_object(child) for child in obj.children},
+				'name': obj.name,
 				'translation': [i for i in obj.location],
 				'rotation': sort_quat(obj.rotation_quaternion),
-				'scale': [i for i in obj.scale],
-				'components': components
+				'scale': [i for i in obj.scale]
 			}
+
+			if obj.children is not None and len(obj.children) > 0:
+				node['children'] = [export_object(child) for child in obj.children]
+
+			if components is not None and len(components) > 0:
+				node['components'] = components
 
 			if obj.type == 'MESH':
 				node['mesh'] = obj.data.name
@@ -117,7 +122,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			return node
 
 		# export each _root_ object (only objects without parents)
-		return {obj.name: export_object(obj) for obj in objects if obj.parent is None}
+		return [export_object(obj) for obj in objects if obj.parent is None]
 
 	def export_meshes(self, scene):
 		# TODO
@@ -128,6 +133,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 		def export_light(light):
 			lit = {
+				'name': light.name,
 				'colour': (light.color * light.energy)[:]
 			}
 
@@ -141,13 +147,14 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			return lit
 
-		return {light.name: export_light(light) for light in lights}
+		return [export_light(light) for light in lights]
 
 	def export_cameras(self, scene):
 		cameras = list(scene.get('cameras', []))
 
 		def export_camera(camera):
 			cam = {
+				'name': camera.name,
 				'near': camera.clip_start,
 				'far':  camera.clip_end
 			}
@@ -164,7 +171,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			return cam
 
-		return {cam.name: export_camera(cam) for cam in cameras}
+		return [export_camera(cam) for cam in cameras]
 
 	def export_materials(self, scene):
 		# TODO

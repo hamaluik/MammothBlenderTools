@@ -1,44 +1,46 @@
 {
-    "cameras": {
-        "Persp Camera": {
+    "cameras": [
+        {
             "aspect": 1.703595982340029,
             "far": 100.0,
             "fov": 0.5033799409866333,
+            "name": "Persp Camera",
             "near": 0.10000000149011612,
             "type": "perspective"
         }
-    },
-    "lights": {
-        "Point": {
+    ],
+    "lights": [
+        {
             "colour": [
                 0.5,
                 0.3978985548019409,
                 0.24230358004570007
             ],
             "distance": 25.0,
+            "name": "Point",
             "type": "point"
         },
-        "Sun": {
+        {
             "colour": [
                 0.7373461723327637,
                 0.7453781366348267,
                 1.0
             ],
+            "name": "Sun",
             "type": "directional"
         }
-    },
+    ],
     "materials": [],
     "meshes": [],
     "meta": {
         "blender": "2.78 (sub 0)",
-        "file": "untitled_blend",
-        "version": "0.0.0"
+        "exporter_version": "0.0.6",
+        "file": "untitled_blend"
     },
-    "objects": {
-        "Camera": {
+    "objects": [
+        {
             "camera": "Persp Camera",
-            "children": {},
-            "components": {},
+            "name": "Camera",
             "rotation": [
                 0.0,
                 0.0,
@@ -56,54 +58,11 @@
                 5.915089130401611
             ]
         },
-        "Camera.001": {
-            "camera": "Persp Camera",
-            "children": {},
-            "components": {},
-            "rotation": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ],
-            "translation": [
-                12.365965843200684,
-                3.9121971130371094,
-                4.509764194488525
-            ]
-        },
-        "Cube": {
-            "children": {
-                "Ball": {
-                    "children": {},
-                    "components": {},
+        {
+            "children": [
+                {
                     "mesh": "Spheroid",
-                    "rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "translation": [
-                        -4.839776515960693,
-                        -3.039827346801758,
-                        0.11498427391052246
-                    ]
-                },
-                "Ball.001": {
-                    "children": {},
-                    "components": {},
-                    "mesh": "Spheroid",
+                    "name": "Ball.001",
                     "rotation": [
                         0.0,
                         0.0,
@@ -120,10 +79,40 @@
                         3.5515809059143066,
                         0.011320233345031738
                     ]
+                },
+                {
+                    "mesh": "Spheroid",
+                    "name": "Ball",
+                    "rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "translation": [
+                        -4.839776515960693,
+                        -3.039827346801758,
+                        0.11498427391052246
+                    ]
+                }
+            ],
+            "components": {
+                "Character": {
+                    "first_name": "Boxey",
+                    "last_name": "McBoxerson"
+                },
+                "Health": {
+                    "current": 100.0,
+                    "max": 100.0
                 }
             },
-            "components": {},
             "mesh": "Cube",
+            "name": "Cube",
             "rotation": [
                 0.0,
                 0.0,
@@ -141,10 +130,9 @@
                 1.9167356491088867
             ]
         },
-        "Ground": {
-            "children": {},
-            "components": {},
+        {
             "mesh": "Plane",
+            "name": "Ground",
             "rotation": [
                 0.0,
                 0.0,
@@ -162,10 +150,9 @@
                 0.0
             ]
         },
-        "Point": {
-            "children": {},
-            "components": {},
+        {
             "light": "Point",
+            "name": "Point",
             "rotation": [
                 0.0,
                 0.0,
@@ -183,10 +170,9 @@
                 0.3589416742324829
             ]
         },
-        "Sun": {
-            "children": {},
-            "components": {},
+        {
             "light": "Sun",
+            "name": "Sun",
             "rotation": [
                 0.0,
                 0.0,
@@ -204,5 +190,5 @@
                 3.827408790588379
             ]
         }
-    }
+    ]
 }
