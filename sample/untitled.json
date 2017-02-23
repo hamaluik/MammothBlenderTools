@@ -101,16 +101,6 @@
                     ]
                 }
             ],
-            "components": {
-                "Character": {
-                    "first_name": "Boxey",
-                    "last_name": "McBoxerson"
-                },
-                "Health": {
-                    "current": 100.0,
-                    "max": 100.0
-                }
-            },
             "mesh": "Cube",
             "name": "Cube",
             "rotation": [
