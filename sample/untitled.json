@@ -30,11 +30,64 @@
             "type": "directional"
         }
     ],
-    "materials": [],
+    "materials": [
+        {
+            "diffuse": {
+                "ambient": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "colour": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "name": "Ground",
+            "textures": {
+                "diffuse": [
+                    "Tex"
+                ]
+            }
+        },
+        {
+            "diffuse": {
+                "ambient": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "colour": [
+                    0.64000004529953,
+                    0.0,
+                    0.031621165573596954,
+                    1.0
+                ]
+            },
+            "name": "Red",
+            "textures": {}
+        },
+        {
+            "name": "Unlit Green",
+            "textures": {},
+            "unlit": {
+                "colour": [
+                    0.013842964544892311,
+                    0.64000004529953,
+                    0.0,
+                    1.0
+                ]
+            }
+        }
+    ],
     "meshes": [],
     "meta": {
         "blender": "2.78 (sub 0)",
-        "exporter_version": "0.0.6",
+        "exporter_version": "0.0.0",
         "file": "untitled_blend"
     },
     "objects": [

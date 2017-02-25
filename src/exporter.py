@@ -20,7 +20,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		scene = {
 			'actions': list(bpy.data.actions),
 			'cameras': list(bpy.data.cameras),
-			'lamps': list(bpy.data.lamps),
+			'lights': list(bpy.data.lamps),
 			'images': list(bpy.data.images),
 			'materials': list(bpy.data.materials),
 			'meshes': list(bpy.data.meshes),
@@ -45,9 +45,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return {'FINISHED'}
 	
 	def process(self, scene):
-		import sys
-		mod_version = sys.modules['mammoth_blender_tools'].bl_info.get('version')
-		mod_version_string = '.'.join(str(v) for v in mod_version)
+		#import sys
+		#mod_version = sys.modules['mammoth_blender_tools'].bl_info.get('version')
+		#mod_version_string = '.'.join(str(v) for v in mod_version)
+		mod_version_string = '0.0.0' # TODO
 
 		data = {
 			'meta': {
@@ -64,7 +65,6 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return data
 
 	def export_objects(self, scene):
-		objects = list(scene.get('objects', []))
 		def export_object(obj):
 			# first get our attached components
 			components = {}
@@ -111,7 +111,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			if obj.type == 'MESH':
 				node['mesh'] = obj.data.name
 			elif obj.type == 'EMPTY':
-				pass
+				passaa
 			elif obj.type == 'CAMERA':
 				node['camera'] = obj.data.name
 			elif obj.type == 'LAMP':
@@ -122,6 +122,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			return node
 
 		# export each _root_ object (only objects without parents)
+		objects = list(scene.get('objects', []))
 		return [export_object(obj) for obj in objects if obj.parent is None]
 
 	def export_meshes(self, scene):
@@ -129,8 +130,6 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return []
 
 	def export_lights(self, scene):
-		lights = list(scene.get('lamps'))
-
 		def export_light(light):
 			lit = {
 				'name': light.name,
@@ -147,11 +146,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			return lit
 
+		lights = list(scene.get('lights'))
 		return [export_light(light) for light in lights]
 
 	def export_cameras(self, scene):
-		cameras = list(scene.get('cameras', []))
-
 		def export_camera(camera):
 			cam = {
 				'name': camera.name,
@@ -171,8 +169,34 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			return cam
 
+		cameras = list(scene.get('cameras', []))
 		return [export_camera(cam) for cam in cameras]
 
 	def export_materials(self, scene):
-		# TODO
-		return []
+		def export_material(material):
+			mat = {
+				'name': material.name,
+				'textures': {}
+			}
+
+			if material.use_shadeless:
+				mat['unlit'] = {
+					'colour': list((material.diffuse_color * material.diffuse_intensity)[:]) + [material.alpha]
+				}
+			elif material.specular_intensity == 0.0:
+				mat['diffuse'] = {
+					'ambient': ([material.ambient]*3) + [1.0],
+					'colour': list((material.diffuse_color * material.diffuse_intensity)[:]) + [material.alpha]
+				}
+			else:
+				raise TypeError('Unsupported material (%s), should be either unlit or have 0 specular intensity!' % material.name)
+
+			textures = [texture for texture in material.texture_slots if texture and texture.texture.type == 'IMAGE']
+			diffuseTextures = [t.texture.name for t in textures if t.use_map_color_diffuse]
+			if diffuseTextures and len(diffuseTextures) > 0:
+				mat['textures']['diffuse'] = diffuseTextures
+
+			return mat
+
+		materials = list(scene.get('materials', []))
+		return [export_material(material) for material in materials]

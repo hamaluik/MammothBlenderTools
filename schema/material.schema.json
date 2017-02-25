@@ -3,6 +3,29 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "properties": {
-        
-    }
+        "name": { "type": "string" },
+        "textures": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
+        },
+        "unlit": {
+            "type": "object",
+            "properties": {
+                "colour": { "type": "$ref #/colour.schema.json" }
+            }
+        },
+        "diffuse": {
+            "type": "object",
+            "properties": {
+                "ambient": { "type": "$ref #/colour.schema.json" },
+                "colour": { "type": "$ref #/colour.schema.json" }
+            }
+        }
+    },
+    "required": ["name", "textures"]
 }
