@@ -126,8 +126,22 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return [export_object(obj) for obj in objects if obj.parent is None]
 
 	def export_meshes(self, scene):
-		# TODO
-		return []
+		def export_mesh(mesh):
+			me = {
+				'name': mesh.name
+			}
+
+			# prep the mesh for export
+			mesh.calc_normals_split()
+			mesh.calc_tessface()
+
+			# vertex data
+			vert_list = { Ve}
+
+			return me
+
+		meshes = list(scene.get('meshes', []))
+		return [export_mesh(mesh) for mesh in meshes]
 
 	def export_lights(self, scene):
 		def export_light(light):
