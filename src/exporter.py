@@ -5,9 +5,11 @@ import json
 import base64
 import struct
 import bmesh
+import zlib
 
 # adapted from https://github.com/Kupoman/blendergltf
 
+# helper class for dealing with vertices
 class Vertex:
 	__slots__ = ['position', 'normal', 'uvs', 'colours', 'index']
 
@@ -30,6 +32,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 	# TODO: put export options as properties here
 	pretty_print = BoolProperty(name='Pretty Print', default=True)
+	pack_images = BoolProperty(name='Pack Images', default=False)
 
 	def execute(self, context):
 		# collect all the scene data
@@ -76,7 +79,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			'meshes': self.export_meshes(scene),
 			'lights': self.export_lights(scene),
 			'cameras': self.export_cameras(scene),
-			'materials': self.export_materials(scene)
+			'materials': self.export_materials(scene),
+			'textures': self.export_textures(scene),
+			'images': self.export_images(scene)
 		}
 		return data
 
@@ -279,3 +284,64 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 		materials = list(scene.get('materials', []))
 		return [export_material(material) for material in materials]
+
+	def export_textures(self, scene):
+		def export_texture(texture):
+			tex = {
+				'name': texture.name,
+				'type': texture.type.lower()
+			}
+
+			if type(texture) is bpy.types.ImageTexture:
+				tex['image'] = {
+					'name': texture.image.name,
+					'wrap': 'repeat' if texture.extension == 'REPEAT' else 'clamp',
+					'filter': 'bilinear' if texture.use_interpolation else 'point'
+				}
+
+			return tex
+		textures = list(scene.get('textures', []))
+		return [export_texture(texture) for texture in textures]
+
+	def export_images(self, scene):
+		def image_to_png_uri(image, asBytes=False):
+			width = image.size[0]
+			height = image.size[1]
+			buf = bytearray([int(p * 255) for p in image.pixels])
+
+			# reverse the vertical line order and add null bytes at the start
+			width_byte_4 = width * 4
+			raw_data = b''.join(b'\x00' + buf[span:span + width_byte_4] for span in range((height - 1) * width_byte_4, -1, - width_byte_4))
+
+			def png_pack(png_tag, data):
+				chunk_head = png_tag + data
+				return (struct.pack("!I", len(data)) +
+						chunk_head +
+						struct.pack("!I", 0xFFFFFFFF & zlib.crc32(chunk_head)))
+
+			png_bytes = b''.join([
+				b'\x89PNG\r\n\x1a\n',
+				png_pack(b'IHDR', struct.pack("!2I5B", width, height, 8, 6, 0, 0, 0)),
+				png_pack(b'IDAT', zlib.compress(raw_data, 9)),
+				png_pack(b'IEND', b'')])
+
+			if asBytes:
+				return png_bytes
+			else:
+				return 'data:image/png;base64,' + base64.b64encode(png_bytes).decode('ascii')
+
+		def export_image(image):
+			im = {
+				'name': image.name,
+				'width': image.size[0],
+				'height': image.size[1]
+			}
+
+			if self.pack_images or image.packed_file is not None:
+				im['uri'] = image_to_png_uri(image)
+			else:
+				im['uri'] = image.filepath.replace('//', '')
+
+			return im
+		images = list(scene.get('images', []))
+		return [export_image(image) for image in images]
