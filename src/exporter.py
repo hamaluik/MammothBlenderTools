@@ -2,8 +2,24 @@ import bpy
 from bpy.props import *
 from bpy_extras.io_utils import ExportHelper
 import json
+import base64
+import struct
+import bmesh
 
 # adapted from https://github.com/Kupoman/blendergltf
+
+class Vertex:
+	__slots__ = ['position', 'normal', 'uvs', 'colours', 'index']
+
+	def __init__(self, mesh, loop):
+		vi = loop.vertex_index
+		i = loop.index
+
+		self.position = mesh.vertices[vi].co
+		self.normal   = mesh.vertices[vi].normal
+		self.uvs      = tuple(layer.data[i].uv for layer in mesh.uv_layers)
+		self.colours  = tuple(layer.data[i].color for layer in mesh.vertex_colors)
+		self.index    = vi
 
 class MammothExporter(bpy.types.Operator, ExportHelper):
 	bl_idname = "export_mammoth_scene.json"
@@ -131,12 +147,61 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 				'name': mesh.name
 			}
 
+			# triangulate the mesh
+			bm = bmesh.new()
+			bm.from_mesh(mesh)
+			bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method=0, ngon_method=0)
+			bm.to_mesh(mesh)
+			bm.free()
+
 			# prep the mesh for export
 			mesh.calc_normals_split()
 			mesh.calc_tessface()
 
-			# vertex data
-			vert_list = { Ve}
+			# how many bytes per vertex?
+			# position + normal + uv + colours
+			vertexSize = (3 + 3 + (len(mesh.uv_layers) * 2) + (len(mesh.vertex_colors) * 3)) * 4
+
+			# extract the vertices
+			vertices = [Vertex(mesh, loop) for loop in mesh.loops]
+			vData = bytearray(vertexSize * len(vertices))
+			i = 0
+			for vertex in vertices:
+				struct.pack_into('ffffff', vData, i,
+					vertex.position[0], vertex.position[1], vertex.position[2],
+					vertex.normal[0], vertex.normal[1], vertex.normal[2]
+				)
+				i += struct.calcsize('ffffff')
+
+				for uv in vertex.uvs:
+					struct.pack_into('ff', vData, i, uv[0], uv[1])
+					i += struct.calcsize('ff')
+
+				for colour in vertex.colours:
+					struct.pack_into('fff', vData, i, colour[0], colour[1], colour[2])
+					i += struct.calcsize('fff')
+
+			# base-64 encode them
+			me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
+
+			# record how the vertices are laid out
+			vertexDescription = ['pos', 'norm']
+			for i in range(0, len(mesh.uv_layers)):
+				vertexDescription.append('uv')
+			for i in range(0, len(mesh.vertex_colors)):
+				vertexDescription.append('col')
+			me['vlayout'] = vertexDescription
+
+			# add the indices
+			indices = [poly.vertices for poly in mesh.polygons]
+			i = 0
+			iData = bytearray(struct.calcsize('iii') * len(indices))
+			for index in indices:
+				struct.pack_into('iii', iData, i, index[0], index[1], index[2])
+				i += struct.calcsize('iii')
+
+			# base-64 encode the indices
+			me['indices'] = 'data:text/plain;base64,' + base64.b64encode(iData).decode('ascii')
 
 			return me
 
