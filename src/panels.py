@@ -9,6 +9,10 @@ class MammothComponents(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		obj = context.object
+
+		row = layout.row()
+		row.prop(obj, "mammoth_use_transform")
+		layout.separator()
 		
 		for key, attributes in bpy.mammothComponentsLayout.items():
 			comp = getattr(obj, "mammoth_component_%s" % key)

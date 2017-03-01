@@ -9,32 +9,38 @@
             "type": "array",
             "items": {"$ref": "#/object.json"}
         },
-        "translation": {
-            "type": "array",
-            "items": {
-                "type": "number",
-                "description": "The x, y, and z coordinates of the object",
-                "minItems": 3,
-                "maxItems": 3
-            }
-        },
-        "rotation": {
-            "type": "array",
-            "items": {
-                "type": "number",
-                "description": "The x, y, z, and w components of the object's rotation",
-                "minItems": 4,
-                "maxItems": 4
-            }
-        },
-        "scale": {
-            "type": "array",
-            "items": {
-                "type": "number",
-                "description": "The x, y, and z scales of the object",
-                "minItems": 3,
-                "maxItems": 3
-            }
+        "transform": {
+            "type": "object",
+            "properties": {
+                "translation": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "description": "The x, y, and z coordinates of the object",
+                        "minItems": 3,
+                        "maxItems": 3
+                    }
+                },
+                "rotation": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "description": "The x, y, z, and w components of the object's rotation",
+                        "minItems": 4,
+                        "maxItems": 4
+                    }
+                },
+                "scale": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "description": "The x, y, and z scales of the object",
+                        "minItems": 3,
+                        "maxItems": 3
+                    }
+                }
+            },
+            "required": ["translation", "rotation", "scale"]
         },
         "components": {
             "type": "object",

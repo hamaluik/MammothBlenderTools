@@ -59,6 +59,10 @@ def load():
 		
 		# store it for later
 		bpy.mammothRegisteredComponents[key] = compType
+
+	# add a toggle for including transforms or not
+	setattr(bpy.types.Object, "mammoth_use_transform", BoolProperty(name="Use Transform", default=True))
+
 	print("loaded components:")
 	print(bpy.mammothComponentsLayout)
 
@@ -69,6 +73,7 @@ def unload():
 			name = "mammoth_component_%s" % key
 			delattr(bpy.types.Object, name)
 			bpy.utils.unregister_class(value)
+		delattr(bpy.types.Object, "mammoth_use_transform")
 	except UnboundLocalError:
 		pass
 	bpy.mammothComponentsLayout = {}

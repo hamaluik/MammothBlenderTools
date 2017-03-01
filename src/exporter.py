@@ -117,11 +117,15 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			# now build the dictionary
 			node = {
-				'name': obj.name,
-				'translation': [i for i in obj.location],
-				'rotation': sort_quat(obj.rotation_quaternion),
-				'scale': [i for i in obj.scale]
+				'name': obj.name
 			}
+
+			if obj.mammoth_use_transform:
+				node['transform'] = {
+					'translation': [i for i in obj.location],
+					'rotation': sort_quat(obj.rotation_quaternion),
+					'scale': [i for i in obj.scale]
+				}
 
 			if obj.children is not None and len(obj.children) > 0:
 				node['children'] = [export_object(child) for child in obj.children]
@@ -132,7 +136,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			if obj.type == 'MESH':
 				node['mesh'] = obj.data.name
 			elif obj.type == 'EMPTY':
-				passaa
+				pass
 			elif obj.type == 'CAMERA':
 				node['camera'] = obj.data.name
 			elif obj.type == 'LAMP':
