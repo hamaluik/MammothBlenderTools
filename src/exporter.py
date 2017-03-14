@@ -79,7 +79,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			'meshes': self.export_meshes(scene),
 			'lights': self.export_lights(scene),
 			'cameras': self.export_cameras(scene),
-			'materials': self.export_materials(scene),
+			'shaders': self.export_materials(scene),
 			'textures': self.export_textures(scene),
 			'images': self.export_images(scene)
 		}
@@ -264,7 +264,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		def export_material(material):
 			mat = {
 				'name': material.name,
-				'textures': {}
+				'textures': []
 			}
 
 			if material.use_shadeless:
