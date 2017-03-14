@@ -151,15 +151,16 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 		return [export_object(obj) for obj in objects if obj.parent is None]
 
 	def export_meshes(self, scene):
-		def export_mesh(mesh):
+		def export_mesh(src_mesh):
 			me = {
-				'name': mesh.name
+				'name': src_mesh.name
 			}
 
 			# triangulate the mesh
 			bm = bmesh.new()
-			bm.from_mesh(mesh)
+			bm.from_mesh(src_mesh)
 			bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method=0, ngon_method=0)
+			mesh = bpy.data.meshes.new(src_mesh.name)
 			bm.to_mesh(mesh)
 			bm.free()
 
@@ -192,13 +193,14 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			# base-64 encode them
 			me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
+			#self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
 
 			# record how the vertices are laid out
-			vertexDescription = ['pos', 'norm']
+			vertexDescription = ['position', 'normal']
 			for i in range(0, len(mesh.uv_layers)):
 				vertexDescription.append('uv')
 			for i in range(0, len(mesh.vertex_colors)):
-				vertexDescription.append('col')
+				vertexDescription.append('colour')
 			me['vlayout'] = vertexDescription
 
 			# add the indices
@@ -211,6 +213,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			# base-64 encode the indices
 			me['indices'] = 'data:text/plain;base64,' + base64.b64encode(iData).decode('ascii')
+			#self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(indices), len(iData), len(me['indices'])))
+
+			# destroy our temporary mesh
+			bpy.data.meshes.remove(mesh, do_unlink=True)
 
 			return me
 
