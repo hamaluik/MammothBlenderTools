@@ -134,7 +134,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 				node['components'] = components
 
 			if obj.type == 'MESH':
-				node['mesh'] = obj.data.name
+				node['render'] = { 'mesh': obj.data.name }
+				if len(obj.material_slots) > 0 and obj.material_slots[0].material is not None:
+					node['render']['shader'] = obj.material_slots[0].material.name
 			elif obj.type == 'EMPTY':
 				pass
 			elif obj.type == 'CAMERA':
