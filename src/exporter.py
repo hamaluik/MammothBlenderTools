@@ -11,17 +11,15 @@ import zlib
 
 # helper class for dealing with vertices
 class Vertex:
-	__slots__ = ['position', 'normal', 'uvs', 'colours', 'index']
+	__slots__ = ['position', 'normal', 'uvs', 'colours', 'index', 'loop_indices']
 
 	def __init__(self, mesh, loop):
-		vi = loop.vertex_index
-		i = loop.index
-
-		self.position = mesh.vertices[vi].co
-		self.normal   = mesh.vertices[vi].normal
-		self.uvs      = tuple(layer.data[i].uv for layer in mesh.uv_layers)
-		self.colours  = tuple(layer.data[i].color for layer in mesh.vertex_colors)
-		self.index    = vi
+		self.position     = mesh.vertices[loop.vertex_index].co
+		self.normal       = mesh.vertices[loop.vertex_index].normal
+		self.uvs          = tuple(layer.data[loop.index].uv for layer in mesh.uv_layers)
+		self.colours      = tuple(layer.data[loop.index].color for layer in mesh.vertex_colors)
+		self.index        = loop.vertex_index
+		self.loop_indices = [loop.index]
 
 class MammothExporter(bpy.types.Operator, ExportHelper):
 	bl_idname = "export_mammoth_scene.json"
@@ -195,7 +193,8 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
 			# base-64 encode them
 			me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
-			#self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
+			self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
+			self.report({'INFO'}, '], ['.join(', '.join(str(p) for p in e.position) for e in vertices))
 
 			# record how the vertices are laid out
 			vertexDescription = ['position', 'normal']
@@ -206,16 +205,23 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 			me['vlayout'] = vertexDescription
 
 			# add the indices
-			indices = [poly.vertices for poly in mesh.polygons]
+			vert_dict = {i: vertex for vertex in vertices for i in vertex.loop_indices}
+			indices = []
+			for poly in mesh.polygons:
+				polyIndices = [vert_dict[i].index for i in poly.loop_indices]
+				indices.extend(polyIndices)
+
+			#indices = [poly.vertices for poly in mesh.polygons]
 			i = 0
-			iData = bytearray(struct.calcsize('iii') * len(indices))
+			iData = bytearray(struct.calcsize('i') * len(indices))
 			for index in indices:
-				struct.pack_into('iii', iData, i, index[0], index[1], index[2])
-				i += struct.calcsize('iii')
+				struct.pack_into('i', iData, i, index)
+				i += struct.calcsize('i')
 
 			# base-64 encode the indices
 			me['indices'] = 'data:text/plain;base64,' + base64.b64encode(iData).decode('ascii')
-			#self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(indices), len(iData), len(me['indices'])))
+			self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(indices), len(iData), len(me['indices'])))
+			self.report({'INFO'}, ', '.join(str(e) for e in indices))
 
 			# destroy our temporary mesh
 			bpy.data.meshes.remove(mesh, do_unlink=True)
