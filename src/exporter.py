@@ -215,7 +215,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             # base-64 encode them
             me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
             self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
-            self.report({'INFO'}, '; '.join(', '.join(str(p) for p in e.position) for e in vertices))
+            #self.report({'INFO'}, '; '.join(', '.join(str(p) for p in e.position) for e in vertices))
 
             # record how the vertices are laid out
             vertexDescription = ['position', 'normal']
@@ -236,7 +236,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             # base-64 encode the indices
             me['indices'] = 'data:text/plain;base64,' + base64.b64encode(iData).decode('ascii')
             self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(triangles) * 3, len(iData), len(me['indices'])))
-            self.report({'INFO'}, '; '.join(', '.join(str(i) for i in t) for t in triangles))
+            #self.report({'INFO'}, '; '.join(', '.join(str(i) for i in t) for t in triangles))
 
             # destroy our temporary mesh
             bpy.data.meshes.remove(mesh, do_unlink=True)
@@ -268,10 +268,13 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
     def export_cameras(self, scene):
         def export_camera(camera):
+            scene0 = list(scene.get('scenes', []))[0]
+
             cam = {
                 'name': camera.name,
                 'near': camera.clip_start,
-                'far':  camera.clip_end
+                'far':  camera.clip_end,
+                'clearColour': list(scene0.world.horizon_color[:])
             }
 
             if camera.type == 'ORTHO':
@@ -290,6 +293,8 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
         return [export_camera(cam) for cam in cameras]
 
     def export_materials(self, scene):
+        scene0 = list(scene.get('scenes', []))[0]
+
         def export_material(material):
             mat = {
                 'name': material.name,
@@ -302,7 +307,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 }
             elif material.specular_intensity == 0.0:
                 mat['diffuse'] = {
-                    'ambient': ([material.ambient]*3) + [1.0],
+                    'ambient': list((scene0.world.ambient_color * material.ambient)[:]) + [1.0],
                     'colour': list((material.diffuse_color * material.diffuse_intensity)[:]) + [material.alpha]
                 }
             else:
