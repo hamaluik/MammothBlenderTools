@@ -128,11 +128,14 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             }
 
             if obj.mammoth_use_transform:
+                oldMode = obj.rotation_mode
+                obj.rotation_mode = 'QUATERNION'
                 node['transform'] = {
                     'translation': [i for i in obj.location],
                     'rotation': sort_quat(obj.rotation_quaternion),
                     'scale': [i for i in obj.scale]
                 }
+                obj.rotation_mode = oldMode
 
             if obj.children is not None and len(obj.children) > 0:
                 node['children'] = [export_object(child) for child in obj.children]
