@@ -319,7 +319,8 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             textures = [texture for texture in material.texture_slots if texture and texture.texture.type == 'IMAGE']
             diffuseTextures = [t.texture.name for t in textures if t.use_map_color_diffuse]
             if diffuseTextures and len(diffuseTextures) > 0:
-                mat['textures']['diffuse'] = diffuseTextures
+                #mat['textures']['diffuse'] = diffuseTextures
+                mat['textures'].extend(diffuseTextures)
 
             return mat
 
@@ -381,7 +382,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             if self.pack_images or image.packed_file is not None:
                 im['uri'] = image_to_png_uri(image)
             else:
-                im['uri'] = image.filepath.replace('//', '')
+                im['uri'] = image.filepath.replace('\\', '/')
 
             return im
         images = list(scene.get('images', []))
