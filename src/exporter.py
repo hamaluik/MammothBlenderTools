@@ -286,9 +286,16 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             if light.type == 'SUN':
                 lit['type'] = 'directional'
+            elif light.type == 'HEMI':
+                lit['type'] = 'hemi'
             elif light.type == 'POINT':
                 lit['type'] = 'point'
                 lit['distance'] = light.distance
+            elif light.type == 'SPOT':
+                lit['type'] = 'spot'
+                lit['distance'] = light.distance
+                lit['angle'] = light.spot_size
+                lit['angleBlend'] = light.spot_blend
             else:
                 raise TypeError('Unsupported light type \'%s\' (%s)' % (light.type, light.name))
 
