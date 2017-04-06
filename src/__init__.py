@@ -33,10 +33,6 @@ else:
 import bpy
 from bpy.props import *
 
-def menu_func_export(self, context):
-	print("Registering / de-registering menu item")
-	operator = self.layout.operator(exporter.MammothExporter.bl_idname, text="Mammoth JSON (.json)")
-
 def register():
 	bpy.utils.register_class(panels.MammothComponentDefinitionsPanel)
 	bpy.utils.register_class(panels.MammothTransformPanel)
@@ -50,7 +46,6 @@ def register():
 	bpy.utils.register_class(menus.AddMammothComponent)
 	components.load()
 	bpy.utils.register_class(exporter.MammothExporter)
-	bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 def unregister():
 	bpy.utils.unregister_class(panels.MammothComponentDefinitionsPanel)
@@ -65,7 +60,6 @@ def unregister():
 	bpy.utils.unregister_class(menus.AddMammothComponent)
 	components.unload()
 	bpy.utils.unregister_class(exporter.MammothExporter)
-	bpy.types.INFO_MT_file_export.remove(menu_func_export)
 
 if __name__ == '__main__':
 	register()
