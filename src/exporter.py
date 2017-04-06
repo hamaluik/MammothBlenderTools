@@ -311,17 +311,28 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 'textures': []
             }
 
+            if not material.use_shadeless:
+                if material.diffuse_shader != 'LAMBERT':
+                    raise TypeError('Unsupported material shader \'%s\' (material %s)', (material.diffuse_shader, material.name)) 
+                if material.specular_shader  != 'COOKTORR' and material.specular_shader != 'PHONG':
+                    raise TypeError('Unsupported material shader \'%s\' (material %s)', (material.diffuse_shader, material.name)) 
+
             if material.use_shadeless:
                 mat['unlit'] = {
-                    'colour': list((material.diffuse_color * material.diffuse_intensity)[:]) + [material.alpha]
+                    'colour': list((material.diffuse_color * material.diffuse_intensity)[:])
                 }
             elif material.specular_intensity == 0.0:
                 mat['diffuse'] = {
                     'ambient': list((scene0.world.ambient_color * material.ambient)[:]) + [1.0],
-                    'colour': list((material.diffuse_color * material.diffuse_intensity)[:]) + [material.alpha]
+                    'diffuse': list((material.diffuse_color * material.diffuse_intensity)[:])
                 }
             else:
-                raise TypeError('Unsupported material (%s), should be either unlit or have 0 specular intensity!' % material.name)
+                mat['specular'] = {
+                    'ambient': list((scene0.world.ambient_color * material.ambient)[:]) + [1.0],
+                    'diffuse': list((material.diffuse_color * material.diffuse_intensity)[:]),
+                    'specular': list((material.specular_color * material.specular_intensity)[:]),
+                    'shininess': float(material.specular_hardness) / 512.0
+                }
 
             textures = [texture for texture in material.texture_slots if texture and texture.texture.type == 'IMAGE']
             diffuseTextures = [t.texture.name for t in textures if t.use_map_color_diffuse]
