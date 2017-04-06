@@ -1,0 +1,6 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "python.autoComplete.extraPaths": [
+      "C:\\Program Files\\Blender Foundation\\Blender\\2.78\\scripts\\modules"
+  ]
+}

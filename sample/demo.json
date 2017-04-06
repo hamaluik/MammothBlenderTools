@@ -1,0 +1,122 @@
+{
+    "cameras": [
+        {
+            "aspect": 1.703595982340029,
+            "clearColour": [
+                0.05087608844041824,
+                0.05087608844041824,
+                0.05087608844041824
+            ],
+            "clearFlags": "both",
+            "far": 100.0,
+            "fov": 0.5033799409866333,
+            "name": "Camera",
+            "near": 0.10000000149011612,
+            "order": 0,
+            "type": "perspective",
+            "viewport": {
+                "max": [
+                    1.0,
+                    1.0
+                ],
+                "min": [
+                    0.0,
+                    0.0
+                ]
+            }
+        }
+    ],
+    "images": [],
+    "lights": [],
+    "meshes": [
+        {
+            "indices": "data:text/plain;base64,AQAAAAIAAAAAAAAAAwAAAAYAAAACAAAABwAAAAQAAAAGAAAABQAAAAAAAAAEAAAABgAAAAAAAAACAAAAAwAAAAUAAAAHAAAAAQAAAAMAAAACAAAAAwAAAAcAAAAGAAAABwAAAAUAAAAEAAAABQAAAAEAAAAAAAAABgAAAAQAAAAAAAAAAwAAAAEAAAAFAAAA",
+            "name": "Cube",
+            "vertices": "data:text/plain;base64,AACAvwAAgL8AAIC/KM0TvyjNE78ozRO/AACAvwAAgL8AAIA/KM0TvyjNE78ozRM/AACAvwAAgD8AAIC/KM0TvyjNEz8ozRO/AACAvwAAgD8AAIA/KM0TvyjNEz8ozRM/AACAPwAAgL8AAIC/KM0TPyjNE78ozRO/AACAPwAAgL8AAIA/KM0TPyjNE78ozRM/AACAPwAAgD8AAIC/KM0TPyjNEz8ozRO/AACAPwAAgD8AAIA/KM0TPyjNEz8ozRM/",
+            "vlayout": [
+                "position",
+                "normal"
+            ]
+        }
+    ],
+    "meta": {
+        "blender": "2.78 (sub 0)",
+        "exporter_version": "0.0.0",
+        "file": "demo_blend"
+    },
+    "objects": [
+        {
+            "camera": "Camera",
+            "name": "Camera",
+            "transform": {
+                "rotation": [
+                    0.4389207363128662,
+                    0.29061833024024963,
+                    0.45883187651634216,
+                    0.7157952785491943
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        },
+        {
+            "name": "Cube",
+            "render": {
+                "mesh": "Cube",
+                "shader": "Material"
+            },
+            "transform": {
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "translation": [
+                    0.0,
+                    3.4635283946990967,
+                    0.0
+                ]
+            }
+        }
+    ],
+    "shaders": [
+        {
+            "diffuse": {
+                "ambient": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "colour": [
+                    0.64000004529953,
+                    0.64000004529953,
+                    0.64000004529953,
+                    1.0
+                ]
+            },
+            "name": "Material",
+            "textures": []
+        }
+    ],
+    "textures": [
+        {
+            "name": "Tex",
+            "type": "none"
+        }
+    ]
+}

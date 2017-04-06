@@ -38,7 +38,10 @@ def menu_func_export(self, context):
 	operator = self.layout.operator(exporter.MammothExporter.bl_idname, text="Mammoth JSON (.json)")
 
 def register():
-	bpy.utils.register_class(panels.MammothComponents)
+	bpy.utils.register_class(panels.MammothComponentDefinitionsPanel)
+	bpy.utils.register_class(panels.MammothTransformPanel)
+	bpy.utils.register_class(panels.MammothComponentsPanel)
+	bpy.utils.register_class(panels.MammothDataPanel)
 	bpy.utils.register_class(settings.MammothComponents)
 	bpy.types.Scene.mammoth_components_settings = PointerProperty(type=settings.MammothComponents)
 	bpy.utils.register_class(operators.AddMammothComponent)
@@ -50,7 +53,10 @@ def register():
 	bpy.types.INFO_MT_file_export.append(menu_func_export)
 
 def unregister():
-	bpy.utils.unregister_class(panels.MammothComponents)
+	bpy.utils.unregister_class(panels.MammothComponentDefinitionsPanel)
+	bpy.utils.unregister_class(panels.MammothTransformPanel)
+	bpy.utils.unregister_class(panels.MammothComponentsPanel)
+	bpy.utils.unregister_class(panels.MammothDataPanel)
 	bpy.utils.unregister_class(settings.MammothComponents)
 	del bpy.types.Scene.mammoth_components_settings
 	bpy.utils.unregister_class(operators.AddMammothComponent)

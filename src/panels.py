@@ -1,7 +1,20 @@
 import bpy
 
-class MammothComponents(bpy.types.Panel):
+class MammothComponentDefinitionsPanel(bpy.types.Panel):
 	bl_label = 'Mammoth Components'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'scene'
+
+	def draw(self, context):
+		layout = self.layout
+		
+		row = layout.row()
+		row.prop(context.scene.mammoth_components_settings, "definitions_path", text="Definitions File")
+		row.operator("wm.reload_mammoth_components", text="", icon="FILE_REFRESH")
+
+class MammothTransformPanel(bpy.types.Panel):
+	bl_label = 'Mammoth Transform'
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = 'object'
@@ -12,7 +25,16 @@ class MammothComponents(bpy.types.Panel):
 
 		row = layout.row()
 		row.prop(obj, "mammoth_use_transform")
-		layout.separator()
+
+class MammothComponentsPanel(bpy.types.Panel):
+	bl_label = 'Mammoth Components'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'object'
+
+	def draw(self, context):
+		layout = self.layout
+		obj = context.object
 		
 		for key, attributes in bpy.mammothComponentsLayout.items():
 			comp = getattr(obj, "mammoth_component_%s" % key)
@@ -30,8 +52,29 @@ class MammothComponents(bpy.types.Panel):
 					
 				layout.separator()
 		
-		layout.operator("wm.call_menu", text="Add Component").name="OBJECT_MT_add_mammoth_component_menu"
-		
-		row = layout.row()
-		row.prop(context.scene.mammoth_components_settings, "definitions_path", text="Definitions File")
-		row.operator("wm.reload_mammoth_components", text="", icon="FILE_REFRESH")
+		if bpy.mammothComponentsLoaded:
+			layout.operator("wm.call_menu", text="Add Component").name="OBJECT_MT_add_mammoth_component_menu"
+
+class MammothDataPanel(bpy.types.Panel):
+	bl_label = 'Mammoth'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'data'
+
+	def draw(self, context):
+		layout = self.layout
+		obj = context.object
+		data = obj.data
+
+		if type(data) is bpy.types.Camera:
+			layout.label('Camera')
+			#row = layout.row()
+			layout.prop(data, "mammoth_clear_flags")
+			layout.prop(data, "mammoth_render_order")
+			layout.prop(data, "mammoth_viewport_min")
+			layout.prop(data, "mammoth_viewport_max")
+
+		else:
+			row = layout.row()
+			row.label("There is no special Mammoth data for this type of object!")
+			

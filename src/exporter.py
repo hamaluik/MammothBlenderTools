@@ -277,7 +277,13 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 'name': camera.name,
                 'near': camera.clip_start,
                 'far':  camera.clip_end,
-                'clearColour': list(scene0.world.horizon_color[:])
+                'clearColour': list(scene0.world.horizon_color[:]),
+                'order': camera.mammoth_render_order,
+                'clearFlags': camera.mammoth_clear_flags,
+                'viewport': {
+                    'min': list(camera.mammoth_viewport_min[:]),
+                    'max': list(camera.mammoth_viewport_max[:])
+                }
             }
 
             if camera.type == 'ORTHO':
