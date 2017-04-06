@@ -6,6 +6,21 @@ bpy.mammothComponentsLoaded = False
 bpy.mammothComponentsLayout = {}
 bpy.mammothRegisteredComponents = {}
 
+# TODO:
+def listMammothLayers(self, context):
+	return [
+		('default', "Default", ""),
+		('ui', "UI", "")
+	]
+
+# TODO:
+def listRenderLayers(self, context):
+	return [
+		('all', "All", ""),
+		('default', "Default", ""),
+		('ui', "UI", "")
+	]
+
 def load():
 	# build our component property groups
 	for key, attributes in bpy.mammothComponentsLayout.items():
@@ -63,6 +78,8 @@ def load():
 
 	# add data to the built-in components
 	setattr(bpy.types.Object, "mammoth_use_transform", BoolProperty(name="Use Transform", default=True))
+	setattr(bpy.types.Object, "mammoth_layer", EnumProperty(name="Layer", items=listMammothLayers))
+
 	setattr(bpy.types.Camera, "mammoth_render_order", IntProperty(name="Render Order", default=0))
 	setattr(bpy.types.Camera, "mammoth_clear_flags", EnumProperty(name="Clear Flags", items=(
 		('none', "None", "Don't clear"),
@@ -72,6 +89,7 @@ def load():
 	), default='both'))
 	setattr(bpy.types.Camera, "mammoth_viewport_min", FloatVectorProperty(name="Viewport Min", size=2, min=0.0, max=1.0, default=(0.0, 0.0)))
 	setattr(bpy.types.Camera, "mammoth_viewport_max", FloatVectorProperty(name="Viewport Max", size=2, min=0.0, max=1.0, default=(1.0, 1.0)))
+	setattr(bpy.types.Camera, "mammoth_render_layers", EnumProperty(name="Render Layers", items=listRenderLayers))
 
 	bpy.mammothComponentsLoaded = True
 
@@ -86,10 +104,12 @@ def unload():
 			delattr(bpy.types.Object, name)
 			bpy.utils.unregister_class(value)
 		delattr(bpy.types.Object, "mammoth_use_transform")
+		delattr(bpy.types.Object, "mammoth_layer")
 		delattr(bpy.types.Camera, "mammoth_render_order")
 		delattr(bpy.types.Camera, "mammoth_clear_flags")
 		delattr(bpy.types.Camera, "mammoth_viewport_min")
 		delattr(bpy.types.Camera, "mammoth_viewport_max")
+		delattr(bpy.types.Camera, "mammoth_render_layers")
 	except UnboundLocalError:
 		pass
 	bpy.mammothComponentsLayout = {}

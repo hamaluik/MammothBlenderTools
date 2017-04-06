@@ -1,7 +1,7 @@
 import bpy
 
-class MammothComponentDefinitionsPanel(bpy.types.Panel):
-	bl_label = 'Mammoth Components'
+class MammothSettingsPanel(bpy.types.Panel):
+	bl_label = 'Mammoth'
 	bl_space_type = 'PROPERTIES'
 	bl_region_type = 'WINDOW'
 	bl_context = 'scene'
@@ -12,6 +12,7 @@ class MammothComponentDefinitionsPanel(bpy.types.Panel):
 		row = layout.row()
 		row.prop(context.scene.mammoth_components_settings, "definitions_path", text="Definitions File")
 		row.operator("wm.reload_mammoth_components", text="", icon="FILE_REFRESH")
+		# TODO: layer creation tool
 
 class MammothTransformPanel(bpy.types.Panel):
 	bl_label = 'Mammoth Transform'
@@ -23,8 +24,8 @@ class MammothTransformPanel(bpy.types.Panel):
 		layout = self.layout
 		obj = context.object
 
-		row = layout.row()
-		row.prop(obj, "mammoth_use_transform")
+		layout.prop(obj, "mammoth_use_transform")
+		layout.prop(obj, "mammoth_layer")
 
 class MammothComponentsPanel(bpy.types.Panel):
 	bl_label = 'Mammoth Components'
@@ -68,11 +69,11 @@ class MammothDataPanel(bpy.types.Panel):
 
 		if type(data) is bpy.types.Camera:
 			layout.label('Camera')
-			#row = layout.row()
 			layout.prop(data, "mammoth_clear_flags")
 			layout.prop(data, "mammoth_render_order")
 			layout.prop(data, "mammoth_viewport_min")
 			layout.prop(data, "mammoth_viewport_max")
+			layout.prop(data, "mammoth_render_layers")
 
 		else:
 			row = layout.row()

@@ -34,7 +34,7 @@ import bpy
 from bpy.props import *
 
 def register():
-	bpy.utils.register_class(panels.MammothComponentDefinitionsPanel)
+	bpy.utils.register_class(panels.MammothSettingsPanel)
 	bpy.utils.register_class(panels.MammothTransformPanel)
 	bpy.utils.register_class(panels.MammothComponentsPanel)
 	bpy.utils.register_class(panels.MammothDataPanel)
@@ -48,7 +48,7 @@ def register():
 	bpy.utils.register_class(exporter.MammothExporter)
 
 def unregister():
-	bpy.utils.unregister_class(panels.MammothComponentDefinitionsPanel)
+	bpy.utils.unregister_class(panels.MammothSettingsPanel)
 	bpy.utils.unregister_class(panels.MammothTransformPanel)
 	bpy.utils.unregister_class(panels.MammothComponentsPanel)
 	bpy.utils.unregister_class(panels.MammothDataPanel)
