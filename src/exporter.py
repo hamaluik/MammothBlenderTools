@@ -275,7 +275,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                     meshes.append(mesh)
         else:
             meshes = list(file_data.get('meshes', []))
-        return [export_mesh(mesh) for mesh in meshes]
+        return [export_mesh(mesh) for mesh in meshes if mesh.users > 0]
 
     def export_lights(self, file_data):
         def export_light(light):
@@ -295,7 +295,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return lit
 
         lights = list(file_data.get('lights'))
-        return [export_light(light) for light in lights]
+        return [export_light(light) for light in lights if light.users > 0]
 
     def export_cameras(self, file_data):
         def export_camera(camera):
@@ -327,7 +327,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return cam
 
         cameras = list(file_data.get('cameras', []))
-        return [export_camera(cam) for cam in cameras]
+        return [export_camera(cam) for cam in cameras if cam.users > 0]
 
     def export_materials(self, file_data):
         scene0 = list(file_data.get('scenes', []))[0]
@@ -370,7 +370,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return mat
 
         materials = list(file_data.get('materials', []))
-        return [export_material(material) for material in materials]
+        return [export_material(material) for material in materials if material.users > 0]
 
     def export_textures(self, file_data):
         def export_texture(texture):
@@ -388,7 +388,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return tex
         textures = list(file_data.get('textures', []))
-        return [export_texture(texture) for texture in textures]
+        return [export_texture(texture) for texture in textures if texture.users > 0]
 
     def export_images(self, file_data):
         def image_to_png_uri(image, asBytes=False):
@@ -431,4 +431,4 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return im
         images = list(file_data.get('images', []))
-        return [export_image(image) for image in images]
+        return [export_image(image) for image in images if image.users > 0]
