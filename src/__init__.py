@@ -2,7 +2,7 @@ bl_info = {
 	'name': 'Mammoth Tools',
 	'description': 'Various tools for adding components to objects and exporting the result as Mammoth JSON',
 	'author': 'Kenton Hamaluik',
-	'version': (0, 0, 6),
+	'version': (0, 0, 10),
 	'blender': (2, 78, 0),
 	'location': 'Properties > Object',
 	'warning': 'Still very much under development!',

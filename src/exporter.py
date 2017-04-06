@@ -31,10 +31,12 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
     # TODO: put export options as properties here
     pretty_print = BoolProperty(name='Pretty Print', default=True)
     pack_images = BoolProperty(name='Pack Images', default=False)
+    #apply_mesh_modifiers = BoolProperty(name='Apply Mesh Modifiers', default=True) # TODO: figure out modifiers!
+    apply_mesh_modifiers = BoolProperty(name='Apply Mesh Modifiers', default=False, is_readonly=True)
 
     def execute(self, context):
-        # collect all the scene data
-        scene = {
+        # collect all the file data
+        file_data = {
             'actions': list(bpy.data.actions),
             'cameras': list(bpy.data.cameras),
             'lights': list(bpy.data.lamps),
@@ -47,7 +49,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
         }
 
         # convert our scene into JSON
-        data = self.process(scene)
+        data = self.process(file_data)
 
         # and save it to file!
         with open(self.filepath, 'w') as fout:
@@ -71,11 +73,11 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
         return {'FINISHED'}
     
-    def process(self, scene):
+    def process(self, file_data):
         #import sys
         #mod_version = sys.modules['mammoth_blender_tools'].bl_info.get('version')
         #mod_version_string = '.'.join(str(v) for v in mod_version)
-        mod_version_string = '0.0.0' # TODO
+        mod_version_string = '0.0.10' # TODO
 
         data = {
             'meta': {
@@ -83,17 +85,17 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 'blender': bpy.app.version_string,
                 'exporter_version': mod_version_string,
             },
-            'objects': self.export_objects(scene),
-            'meshes': self.export_meshes(scene),
-            'lights': self.export_lights(scene),
-            'cameras': self.export_cameras(scene),
-            'shaders': self.export_materials(scene),
-            'textures': self.export_textures(scene),
-            'images': self.export_images(scene)
+            'objects': self.export_objects(file_data),
+            'meshes': self.export_meshes(file_data),
+            'lights': self.export_lights(file_data),
+            'cameras': self.export_cameras(file_data),
+            'shaders': self.export_materials(file_data),
+            'textures': self.export_textures(file_data),
+            'images': self.export_images(file_data)
         }
         return data
 
-    def export_objects(self, scene):
+    def export_objects(self, file_data):
         def export_object(obj):
             # first get our attached components
             components = {}
@@ -160,10 +162,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return node
 
         # export each _root_ object (only objects without parents)
-        objects = list(scene.get('objects', []))
+        objects = list(file_data.get('objects', []))
         return [export_object(obj) for obj in objects if obj.parent is None]
 
-    def export_meshes(self, scene):
+    def export_meshes(self, file_data):
         def export_mesh(src_mesh):
             me = {
                 'name': src_mesh.name
@@ -247,10 +249,35 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return me
 
-        meshes = list(scene.get('meshes', []))
+        # apply modifiers
+        meshes = []
+        # TODO: figure out how to do this with multiple objects having modifiers
+        # (mostly point objects to the correct modified mesh)
+        if self.apply_mesh_modifiers:
+            # figure out all objects / meshes that have mods on them
+            scene = bpy.context.scene
+            modified_objects = [obj for obj in file_data.get('objects', []) if obj.is_modified(scene, 'PREVIEW')]
+            for mesh in list(file_data.get('meshes', [])):
+                mod_users = [obj for obj in modified_objects if obj.data == mesh]
+
+                # only convert meshes with modifiers, otherwise each non-modifier
+                # user ends up with a copy of the mesh and we lose instancing
+                #meshes.extend([obj.to_mesh(scene, True, 'PREVIEW') for obj in mod_users])
+                i = 0
+                for obj in mod_users:
+                    mod_mesh = obj.to_mesh(scene, True, 'PREVIEW')
+                    mod_mesh.name = '%s.mod.%d' % (mesh.name, i)
+                    meshes.append(mod_mesh)
+                    i += 1
+
+                # include meshes that don't have any mods on them
+                if len(mod_users) < mesh.users:
+                    meshes.append(mesh)
+        else:
+            meshes = list(file_data.get('meshes', []))
         return [export_mesh(mesh) for mesh in meshes]
 
-    def export_lights(self, scene):
+    def export_lights(self, file_data):
         def export_light(light):
             lit = {
                 'name': light.name,
@@ -267,12 +294,12 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return lit
 
-        lights = list(scene.get('lights'))
+        lights = list(file_data.get('lights'))
         return [export_light(light) for light in lights]
 
-    def export_cameras(self, scene):
+    def export_cameras(self, file_data):
         def export_camera(camera):
-            scene0 = list(scene.get('scenes', []))[0]
+            scene0 = list(file_data.get('scenes', []))[0]
 
             cam = {
                 'name': camera.name,
@@ -299,11 +326,11 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return cam
 
-        cameras = list(scene.get('cameras', []))
+        cameras = list(file_data.get('cameras', []))
         return [export_camera(cam) for cam in cameras]
 
-    def export_materials(self, scene):
-        scene0 = list(scene.get('scenes', []))[0]
+    def export_materials(self, file_data):
+        scene0 = list(file_data.get('scenes', []))[0]
 
         def export_material(material):
             mat = {
@@ -342,10 +369,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             return mat
 
-        materials = list(scene.get('materials', []))
+        materials = list(file_data.get('materials', []))
         return [export_material(material) for material in materials]
 
-    def export_textures(self, scene):
+    def export_textures(self, file_data):
         def export_texture(texture):
             tex = {
                 'name': texture.name,
@@ -360,10 +387,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 }
 
             return tex
-        textures = list(scene.get('textures', []))
+        textures = list(file_data.get('textures', []))
         return [export_texture(texture) for texture in textures]
 
-    def export_images(self, scene):
+    def export_images(self, file_data):
         def image_to_png_uri(image, asBytes=False):
             width = image.size[0]
             height = image.size[1]
@@ -403,5 +430,5 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 im['uri'] = image.filepath.replace('\\', '/')
 
             return im
-        images = list(scene.get('images', []))
+        images = list(file_data.get('images', []))
         return [export_image(image) for image in images]
