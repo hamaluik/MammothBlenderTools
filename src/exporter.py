@@ -6,20 +6,11 @@ import base64
 import struct
 import bmesh
 import zlib
+import os
 
 # adapted from https://github.com/Kupoman/blendergltf
 
 # helper class for dealing with vertices
-#class Vertex:
-#    __slots__ = ['position', 'normal', 'uvs', 'colours', 'index', 'loop_indices']
-#
-#    def __init__(self, mesh, loop):
-#        self.position     = mesh.vertices[loop.vertex_index].co
-#        self.normal       = mesh.vertices[loop.vertex_index].normal
-#        self.uvs          = tuple(layer.data[loop.index].uv for layer in mesh.uv_layers)
-#        self.colours      = tuple(layer.data[loop.index].color for layer in mesh.vertex_colors)
-#        self.index        = loop.vertex_index
-#        self.loop_indices = [loop.index]
 class Vertex:
     __slots__ = ['position', 'normal', 'uv', 'colour', 'index']
 
@@ -64,7 +55,17 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             if self.pretty_print:
                 indent = 4
 
-            json.dump(data, fout, indent=indent, sort_keys=True, check_circular=False)
+            txtVersion = json.JSONEncoder(indent=indent, sort_keys=True, check_circular=False).encode(data)
+            fout.write(txtVersion)
+
+            def sizeof_fmt(num, suffix='B'):
+                for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+                    if abs(num) < 1024.0:
+                        return "%3.1f%s%s" % (num, unit, suffix)
+                    num /= 1024.0
+                return "%.1f%s%s" % (num, 'Yi', suffix)
+            self.report({'INFO'}, '[Mammoth] saved %s! (%s)' % (os.path.basename(self.filepath), sizeof_fmt(len(txtVersion))))
+            
             if self.pretty_print:
                 fout.write('\n')
 
@@ -217,7 +218,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             # base-64 encode them
             me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
-            self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
+            #self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
             #self.report({'INFO'}, '; '.join(', '.join(str(p) for p in e.position) for e in vertices))
 
             # record how the vertices are laid out
@@ -238,7 +239,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
 
             # base-64 encode the indices
             me['indices'] = 'data:text/plain;base64,' + base64.b64encode(iData).decode('ascii')
-            self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(triangles) * 3, len(iData), len(me['indices'])))
+            #self.report({'INFO'}, '[Mammoth] Encoded %d vertex indices into %d bytes (%d base-64)' % (len(triangles) * 3, len(iData), len(me['indices'])))
             #self.report({'INFO'}, '; '.join(', '.join(str(i) for i in t) for t in triangles))
 
             # destroy our temporary mesh
