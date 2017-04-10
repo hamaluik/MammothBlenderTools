@@ -1,0 +1,148 @@
+{
+    "armatures": [
+        {
+            "bones": [
+                {
+                    "children": [
+                        {
+                            "children": [
+                                {
+                                    "children": [],
+                                    "matrix": [
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        0.0,
+                                        1.0,
+                                        0.0,
+                                        0.0,
+                                        0.5,
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "name": "Bone.002"
+                                }
+                            ],
+                            "matrix": [
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.0,
+                                1.0,
+                                0.0,
+                                0.0,
+                                0.5,
+                                0.0,
+                                1.0
+                            ],
+                            "name": "Bone.001"
+                        }
+                    ],
+                    "matrix": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0,
+                        0.0,
+                        0.0,
+                        -1.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "name": "Bone"
+                }
+            ],
+            "name": "Mr. Bendy's Bones"
+        }
+    ],
+    "cameras": [],
+    "images": [],
+    "lights": [],
+    "meshes": [
+        {
+            "indices": "data:text/plain;base64,AQAAACIAAAARAAAAAwAAACQAAAAiAAAABwAAACYAAAAkAAAABQAAABEAAAAmAAAABgAAAAAAAAACAAAAGQAAAAoAAAAaAAAACQAAAAsAAAAKAAAAGgAAAAsAAAAcAAAAHwAAAAkAAAAZAAAAHAAAAAgAAAAfAAAADwAAACEAAAAWAAAADgAAABYAAAAUAAAADQAAABQAAAASAAAADAAAABIAAAAhAAAAIAAAAAIAAAAAAAAAIQAAABMAAAAgAAAAEwAAAAYAAAACAAAAEgAAABUAAAATAAAAFQAAAAQAAAAGAAAAFAAAABcAAAAVAAAAFwAAAAAAAAAEAAAAFgAAACAAAAAXAAAABQAAAB4AAAABAAAAHQAAAB8AAAAeAAAAAQAAABgAAAADAAAAHgAAABkAAAAYAAAABwAAAB0AAAAFAAAAGwAAABwAAAAdAAAAAwAAABsAAAAHAAAAGAAAABoAAAAbAAAAJwAAAAwAAAAPAAAAJgAAABAAAAAnAAAAJQAAAA8AAAAOAAAAJAAAACcAAAAlAAAAIwAAAA4AAAANAAAAIgAAACUAAAAjAAAAEAAAAA0AAAAMAAAAEQAAACMAAAAQAAAAAQAAAAMAAAAiAAAAAwAAAAcAAAAkAAAABwAAAAUAAAAmAAAABQAAAAEAAAARAAAABgAAAAQAAAAAAAAAGQAAAAkAAAAKAAAACQAAAAgAAAALAAAAGgAAAAoAAAALAAAAHwAAAAgAAAAJAAAAHAAAAAsAAAAIAAAADwAAAAwAAAAhAAAADgAAAA8AAAAWAAAADQAAAA4AAAAUAAAADAAAAA0AAAASAAAAIAAAABMAAAACAAAAIQAAABIAAAATAAAAEwAAABUAAAAGAAAAEgAAABQAAAAVAAAAFQAAABcAAAAEAAAAFAAAABYAAAAXAAAAFwAAACAAAAAAAAAAFgAAACEAAAAgAAAABQAAAB0AAAAeAAAAHQAAABwAAAAfAAAAAQAAAB4AAAAYAAAAHgAAAB8AAAAZAAAABwAAABsAAAAdAAAAGwAAABoAAAAcAAAAAwAAABgAAAAbAAAAGAAAABkAAAAaAAAAJwAAABAAAAAMAAAAJgAAABEAAAAQAAAAJQAAACcAAAAPAAAAJAAAACYAAAAnAAAAIwAAACUAAAAOAAAAIgAAACQAAAAlAAAAEAAAACMAAAANAAAAEQAAACIAAAAjAAAA",
+            "name": "Mr. Bendy's Skin",
+            "vertices": "data:text/plain;base64,AAAAvwAAAL8AAAAAKM0TvyjNE78ozRO/AAAAvwAAAL8AAIA/agM1v2oDNb8AAAAAAAAAvwAAAD8AAAAAKM0TvyjNEz8ozRO/AAAAvwAAAD8AAIA/agM1v2oDNT8AAAAAAAAAPwAAAL8AAAAAKM0TPyjNE78ozRO/AAAAPwAAAL8AAIA/agM1P2oDNb8AAAAAAAAAPwAAAD8AAAAAKM0TPyjNEz8ozRO/AAAAPwAAAD8AAIA/agM1P2oDNT8AAAAAAAAAvwAAAL8AAMA/KM0TvyjNE78ozRM/AAAAvwAAAD8AAMA/KM0TvyjNEz8ozRM/AAAAPwAAAD8AAMA/KM0TPyjNEz8ozRM/AAAAPwAAAL8AAMA/KM0TPyjNE78ozRM/AAAAvwAAAL8AAAA/agM1v2oDNb8AAAAAAAAAvwAAAD8AAAA/agM1v2oDNT8AAAAAAAAAPwAAAD8AAAA/agM1P2oDNT8AAAAAAAAAPwAAAL8AAAA/agM1P2oDNb8AAAAAAAAAvwAAAL+rqio/agM1v2oDNb8AAAAAAAAAvwAAAL9WVVU/agM1v2oDNb8AAAAAAAAAvwAAAD+qqqo+agM1v2oDNT8AAAAAAAAAvwAAAD+qqio+agM1v2oDNT8AAAAAAAAAPwAAAD+qqqo+agM1P2oDNT8AAAAAAAAAPwAAAD+qqio+agM1P2oDNT8AAAAAAAAAPwAAAL+qqqo+agM1P2oDNb8AAAAAAAAAPwAAAL+qqio+agM1P2oDNb8AAAAAAAAAvwAAAD9VVZU/agM1v2oDNT8AAAAAAAAAvwAAAD+qqqo/agM1v2oDNT8AAAAAAAAAPwAAAD+rqqo/agM1P2oDNT8AAAAAAAAAPwAAAD9WVZU/agM1P2oDNT8AAAAAAAAAPwAAAL+rqqo/agM1P2oDNb8AAAAAAAAAPwAAAL9WVZU/agM1P2oDNb8AAAAAAAAAvwAAAL9VVZU/agM1v2oDNb8AAAAAAAAAvwAAAL+qqqo/agM1v2oDNb8AAAAAAAAAvwAAAL+rqio+agM1v2oDNb8AAAAAAAAAvwAAAL+qqqo+agM1v2oDNb8AAAAAAAAAvwAAAD9VVVU/agM1v2oDNT8AAAAAAAAAvwAAAD+qqio/agM1v2oDNT8AAAAAAAAAPwAAAD9VVVU/agM1P2oDNT8AAAAAAAAAPwAAAD+qqio/agM1P2oDNT8AAAAAAAAAPwAAAL9VVVU/agM1P2oDNb8AAAAAAAAAPwAAAL+qqio/agM1P2oDNb8AAAAA",
+            "vlayout": [
+                "position",
+                "normal"
+            ]
+        }
+    ],
+    "meta": {
+        "blender": "2.78 (sub 0)",
+        "exporter_version": "0.0.10",
+        "file": "armatures_blend"
+    },
+    "objects": [
+        {
+            "armature": "Mr. Bendy's Bones",
+            "children": [
+                {
+                    "name": "Mr. Bendy's Body",
+                    "render": {
+                        "mesh": "Mr. Bendy's Skin"
+                    },
+                    "transform": {
+                        "rotation": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "translation": [
+                            0.0,
+                            0.0,
+                            0.0
+                        ]
+                    }
+                }
+            ],
+            "name": "Mr. Bendy",
+            "transform": {
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ]
+            }
+        }
+    ],
+    "shaders": [],
+    "textures": []
+}

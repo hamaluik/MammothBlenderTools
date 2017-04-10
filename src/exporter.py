@@ -12,7 +12,7 @@ import os
 
 # helper class for dealing with vertices
 class Vertex:
-    __slots__ = ['position', 'normal', 'uv', 'colour', 'index']
+    __slots__ = ['position', 'normal', 'uv', 'colour', 'index', 'bone_weights', 'bone_indices']
 
     def __init__(self, vertex):
         self.position = vertex.co
@@ -20,6 +20,19 @@ class Vertex:
         self.uv = None
         self.colour = None
         self.index = vertex.index
+        
+        # bone data!
+        # note: limit each vertex to being attached to 4 bones at a time
+        # (using the most influential 4 bones)
+        groups = sorted( mesh.vertices[vert_idx].groups, key=lambda group: group.weight, reverse=True)
+        if len(groups) > 4:
+            groups = groups[:4]
+        self.bone_weights = [group.weight for group in groups]
+        self.bone_indices = [group.group for group in groups]
+        if len(self.bone_weights) < 4:
+            for _ in range(len(self.bone_weights), 4):
+                self.bone_weights.append(0.0)
+                self.bone_indices.append(0)
 
 class MammothExporter(bpy.types.Operator, ExportHelper):
     bl_idname = "export_mammoth_scene.json"
@@ -32,7 +45,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
     pretty_print = BoolProperty(name='Pretty Print', default=True)
     pack_images = BoolProperty(name='Pack Images', default=False)
     #apply_mesh_modifiers = BoolProperty(name='Apply Mesh Modifiers', default=True) # TODO: figure out modifiers!
-    apply_mesh_modifiers = BoolProperty(name='Apply Mesh Modifiers', default=False, is_readonly=True)
+
+    def toGLMatrix(self, matrix):
+        return [i for col in matrix.col for i in col]
 
     def execute(self, context):
         # collect all the file data
@@ -46,6 +61,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             'objects': list(bpy.data.objects),
             'scenes': list(bpy.data.scenes),
             'textures': list(bpy.data.textures),
+            'armatures': list(bpy.data.armatures)
         }
 
         # convert our scene into JSON
@@ -77,7 +93,7 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
         #import sys
         #mod_version = sys.modules['mammoth_blender_tools'].bl_info.get('version')
         #mod_version_string = '.'.join(str(v) for v in mod_version)
-        mod_version_string = '0.0.10' # TODO
+        mod_version_string = '0.0.11' # TODO: automatic version string?
 
         data = {
             'meta': {
@@ -91,7 +107,8 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             'cameras': self.export_cameras(file_data),
             'shaders': self.export_materials(file_data),
             'textures': self.export_textures(file_data),
-            'images': self.export_images(file_data)
+            'images': self.export_images(file_data),
+            'armatures': self.export_armatures(file_data)
         }
         return data
 
@@ -156,6 +173,8 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 node['camera'] = obj.data.name
             elif obj.type == 'LAMP':
                 node['light'] = obj.data.name
+            elif obj.type == 'ARMATURE':
+                node['armature'] = obj.data.name
             else:
                 raise TypeError('Unsupported object type \'%s\' (%s)' % (obj.type, obj.name))
             
@@ -166,7 +185,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
         return [export_object(obj) for obj in objects if obj.parent is None]
 
     def export_meshes(self, file_data):
+        # TODO: include vertex skinning data!
         def export_mesh(src_mesh):
+            self.report({'INFO'}, 'exporting mesh: %s' % src_mesh.name)
             me = {
                 'name': src_mesh.name
             }
@@ -250,31 +271,32 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return me
 
         # apply modifiers
-        meshes = []
+        #meshes = []
         # TODO: figure out how to do this with multiple objects having modifiers
         # (mostly point objects to the correct modified mesh)
-        if self.apply_mesh_modifiers:
-            # figure out all objects / meshes that have mods on them
-            scene = bpy.context.scene
-            modified_objects = [obj for obj in file_data.get('objects', []) if obj.is_modified(scene, 'PREVIEW')]
-            for mesh in list(file_data.get('meshes', [])):
-                mod_users = [obj for obj in modified_objects if obj.data == mesh]
-
-                # only convert meshes with modifiers, otherwise each non-modifier
-                # user ends up with a copy of the mesh and we lose instancing
-                #meshes.extend([obj.to_mesh(scene, True, 'PREVIEW') for obj in mod_users])
-                i = 0
-                for obj in mod_users:
-                    mod_mesh = obj.to_mesh(scene, True, 'PREVIEW')
-                    mod_mesh.name = '%s.mod.%d' % (mesh.name, i)
-                    meshes.append(mod_mesh)
-                    i += 1
-
-                # include meshes that don't have any mods on them
-                if len(mod_users) < mesh.users:
-                    meshes.append(mesh)
-        else:
-            meshes = list(file_data.get('meshes', []))
+        #if self.apply_mesh_modifiers:
+        #    # figure out all objects / meshes that have mods on them
+        #    scene = bpy.context.scene
+        #    modified_objects = [obj for obj in file_data.get('objects', []) if obj.is_modified(scene, 'PREVIEW')]
+        #    for mesh in list(file_data.get('meshes', [])):
+        #        mod_users = [obj for obj in modified_objects if obj.data == mesh]
+        #
+        #        # only convert meshes with modifiers, otherwise each non-modifier
+        #        # user ends up with a copy of the mesh and we lose instancing
+        #        #meshes.extend([obj.to_mesh(scene, True, 'PREVIEW') for obj in mod_users])
+        #        i = 0
+        #        for obj in mod_users:
+        #            mod_mesh = obj.to_mesh(scene, True, 'PREVIEW')
+        #            mod_mesh.name = '%s.mod.%d' % (mesh.name, i)
+        #            meshes.append(mod_mesh)
+        #            i += 1
+        #
+        #        # include meshes that don't have any mods on them
+        #        if len(mod_users) < mesh.users:
+        #            meshes.append(mesh)
+        #else:
+        #    meshes = list(file_data.get('meshes', []))
+        meshes = list(file_data.get('meshes', []))
         return [export_mesh(mesh) for mesh in meshes if mesh.users > 0]
 
     def export_lights(self, file_data):
@@ -439,3 +461,22 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             return im
         images = list(file_data.get('images', []))
         return [export_image(image) for image in images if image.users > 0]
+
+    def export_armatures(self, file_data):
+        def export_armature(armature):
+            def export_bone(bone):
+                matrix = bone.matrix_local
+                if bone.parent:
+                    matrix = bone.parent.matrix_local.inverted() * matrix
+                return {
+                    'name': bone.name,
+                    'matrix': self.toGLMatrix(matrix),
+                    'children': [export_bone(child) for child in bone.children]
+                }
+
+            return {
+                'name': armature.name,
+                'bones': [export_bone(bone) for bone in armature.bones if bone.parent is None]
+            }
+        armatures = list(file_data.get('armatures', []))
+        return [export_armature(armature) for armature in armatures if armature.users > 0]
