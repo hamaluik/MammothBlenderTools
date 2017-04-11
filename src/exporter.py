@@ -12,7 +12,7 @@ import os
 
 # helper class for dealing with vertices
 class Vertex:
-    __slots__ = ['position', 'normal', 'uv', 'colour', 'index', 'bone_weights', 'bone_indices']
+    __slots__ = ['position', 'normal', 'uv', 'colour', 'index', 'bone_indices', 'bone_weights']
 
     def __init__(self, vertex):
         self.position = vertex.co
@@ -24,11 +24,11 @@ class Vertex:
         # bone data!
         # note: limit each vertex to being attached to 4 bones at a time
         # (using the most influential 4 bones)
-        groups = sorted( mesh.vertices[vert_idx].groups, key=lambda group: group.weight, reverse=True)
+        groups = sorted(vertex.groups, key=lambda group: group.weight, reverse=True)
         if len(groups) > 4:
             groups = groups[:4]
-        self.bone_weights = [group.weight for group in groups]
         self.bone_indices = [group.group for group in groups]
+        self.bone_weights = [group.weight for group in groups]
         if len(self.bone_weights) < 4:
             for _ in range(len(self.bone_weights), 4):
                 self.bone_weights.append(0.0)
@@ -192,6 +192,13 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 'name': src_mesh.name
             }
 
+            # determine if the mesh is a skin or not
+            is_skinned = False
+            for obj in list(file_data.get('objects', [])):
+                if obj.type == 'MESH' and obj.data == src_mesh and obj.find_armature():
+                    is_skinned = True
+                    break
+
             # triangulate the mesh
             bm = bmesh.new()
             bm.from_mesh(src_mesh)
@@ -205,8 +212,10 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
             mesh.calc_tessface()
 
             # how many bytes per vertex?
-            # position + normal + uv + colours
-            vertexSize = (3 + 3 + (len(mesh.uv_layers) * 2) + (len(mesh.vertex_colors) * 3)) * 4
+            # position + normal + uv + colours + bone indices + bone weights
+            num_bone_indices = 4 if is_skinned else 0
+            num_bone_weights = 4 if is_skinned else 0
+            vertexSize = (3 + 3 + (len(mesh.uv_layers) * 2) + (len(mesh.vertex_colors) * 3) + num_bone_indices + num_bone_weights) * 4
 
             # extract the vertices
             #vertices = [Vertex(mesh, loop) for loop in mesh.loops]
@@ -239,6 +248,12 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                     struct.pack_into('fff', vData, i, vertex.colour[0], vertex.colour[1], vertex.colour[2])
                     i += struct.calcsize('fff')
 
+                if is_skinned:
+                    struct.pack_into('IIIIffff', vData, i,
+                        vertex.bone_indices[0], vertex.bone_indices[1], vertex.bone_indices[2], vertex.bone_indices[3],
+                        vertex.bone_weights[0], vertex.bone_weights[1], vertex.bone_weights[2], vertex.bone_weights[3])
+                    i += struct.calcsize('IIIIffff')
+
             # base-64 encode them
             me['vertices'] = 'data:text/plain;base64,' + base64.b64encode(vData).decode('ascii')
             #self.report({'INFO'}, '[Mammoth] Encoded %d vertices into %d bytes (%d base-64)' % (len(vertices), len(vData), len(me['vertices'])))
@@ -250,6 +265,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 vertexDescription.append('uv')
             if len(mesh.vertex_colors) > 0:
                 vertexDescription.append('colour')
+            if is_skinned:
+                vertexDescription.append('bone_indices')
+                vertexDescription.append('bone_weights')
             me['vlayout'] = vertexDescription
 
             # add the indices
