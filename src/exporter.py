@@ -167,6 +167,16 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
                 node['render'] = { 'mesh': obj.data.name }
                 if len(obj.material_slots) > 0 and obj.material_slots[0].material is not None:
                     node['render']['shader'] = obj.material_slots[0].material.name
+
+                armature = obj.find_armature()
+                if armature:
+                    bind_shape_mat = obj.matrix_world * armature.matrix_world.inverted()
+                    node['skin'] = {
+                        'bindShapeMatrix': self.toGLMatrix(bind_shape_mat),
+                        'armature': armature.data.name,
+                        'bones': [group.name for group in obj.vertex_groups]
+                    }
+
             elif obj.type == 'EMPTY':
                 pass
             elif obj.type == 'CAMERA':
@@ -484,8 +494,9 @@ class MammothExporter(bpy.types.Operator, ExportHelper):
         def export_armature(armature):
             def export_bone(bone):
                 matrix = bone.matrix_local
-                if bone.parent:
-                    matrix = bone.parent.matrix_local.inverted() * matrix
+                # TODO: should this be applied or not, given we're stored the parent->child structure
+                #if bone.parent:
+                #    matrix = bone.parent.matrix_local.inverted() * matrix
                 return {
                     'name': bone.name,
                     'matrix': self.toGLMatrix(matrix),
